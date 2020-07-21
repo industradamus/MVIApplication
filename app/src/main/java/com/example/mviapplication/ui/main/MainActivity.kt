@@ -4,31 +4,26 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mviapplication.R
-import com.example.mviapplication.core.network.PicsumApi
+import com.example.mviapplication.core.common.ImageLoader
 import com.example.mviapplication.ui.common.ObservableSourceActivity
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : ObservableSourceActivity<MainUiEvent>(), Consumer<MainViewModel> {
 
-    private val picsumApi: PicsumApi by inject()
+    private val imageLoader: ImageLoader by inject()
+    private val binder: MainActivityBinder by inject { parametersOf(this) }
 
-    private val binder by lazy { MainActivityBinder(this, MainFeature(picsumApi)) }
-    private val imageAdapter = ImageAdapter()
+    private val imageAdapter = ImageAdapter(imageLoader)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initViews()
-
         binder.setup(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        onNext(MainUiEvent.GenerateButtonClicked)
     }
 
     override fun accept(viewModel: MainViewModel) {

@@ -2,7 +2,6 @@ package com.example.mviapplication.core.common
 
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.example.mviapplication.core.application.App
 
 /**
  * @author s.buvaka
@@ -15,7 +14,7 @@ interface ImageLoader {
 class ImageLoaderImpl : ImageLoader {
 
     override fun loadImage(url: String, into: ImageView) {
-        Glide.with(App.applicationContext())
+        Glide.with(into)
             .load(url)
             .into(into)
     }

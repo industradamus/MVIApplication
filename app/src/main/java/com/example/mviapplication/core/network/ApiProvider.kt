@@ -7,10 +7,10 @@ import retrofit2.Retrofit
  */
 interface ApiProvider {
 
-    fun provide(): PicsumApi
+    fun provide(): PixelsApi
 }
 
 class ApiProviderImpl(private val retrofit: Retrofit) : ApiProvider {
 
-    override fun provide(): PicsumApi = retrofit.create(PicsumApi::class.java)
+    override fun provide(): PixelsApi = retrofit.create(PixelsApi::class.java)
 }

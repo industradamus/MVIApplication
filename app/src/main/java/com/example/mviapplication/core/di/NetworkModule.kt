@@ -5,6 +5,7 @@ package com.example.mviapplication.core.di
 import com.example.mviapplication.core.network.*
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
@@ -19,11 +20,12 @@ import java.util.concurrent.TimeUnit
  * @author s.buvaka
  */
 private const val TIMEOUT_IN_SECOND = 30
+private const val HEADER_AUTHORIZATION = "Authorization"
 
 val networkModule = module {
 
     factory<ApiDataProvider> { ApiDataProviderImpl() }
-    factory<OkHttpClient> { buildOkHttpClient() }
+    factory<OkHttpClient> { buildOkHttpClient(get<ApiDataProvider>()) }
     factory<Retrofit> {
         buildRetrofit(
             get<ApiDataProvider>(), get<OkHttpClient>(), GsonConverterFactory.create(
@@ -34,14 +36,15 @@ val networkModule = module {
         )
     }
     factory<ApiProvider> { ApiProviderImpl(get<Retrofit>()) }
-    factory<PicsumApi> { providePicsumApi(get<ApiProvider>()) }
+    factory<PixelsApi> { providePicsumApi(get<ApiProvider>()) }
 }
 
 private val loggingInterceptor = HttpLoggingInterceptor()
 
-private fun buildOkHttpClient(): OkHttpClient {
+private fun buildOkHttpClient(apiDataProvider: ApiDataProvider): OkHttpClient {
     return OkHttpClient.Builder()
         .addNetworkInterceptor(StethoInterceptor())
+        .addInterceptor(getApiKeyInterceptor(apiDataProvider.provideApiKey()))
         .addInterceptor(loggingInterceptor)
         .readTimeout(TIMEOUT_IN_SECOND.toLong(), TimeUnit.SECONDS)
         .connectTimeout(TIMEOUT_IN_SECOND.toLong(), TimeUnit.SECONDS)
@@ -62,4 +65,19 @@ private fun buildRetrofit(
         .build()
 }
 
-private fun providePicsumApi(provider: ApiProvider): PicsumApi = provider.provide()
+private fun providePicsumApi(provider: ApiProvider): PixelsApi = provider.provide()
+
+private fun getApiKeyInterceptor(apiKey: String) = Interceptor { chain ->
+    val url = chain.request()
+        .url
+        .newBuilder()
+        .build()
+
+    val newRequest = chain.request()
+        .newBuilder()
+        .addHeader(HEADER_AUTHORIZATION, apiKey)
+        .url(url)
+        .build()
+
+    chain.proceed(newRequest)
+}
