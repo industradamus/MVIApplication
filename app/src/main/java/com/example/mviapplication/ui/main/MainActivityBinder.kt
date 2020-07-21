@@ -13,6 +13,5 @@ class MainActivityBinder(
 
     override fun setup(view: MainActivity) {
         binder.bind(feature to view using MainViewModelTransformer())
-        binder.bind(view to feature using MainUiEventTransformer())
     }
 }

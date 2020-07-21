@@ -7,7 +7,7 @@ class MainViewModelTransformer : (MainFeature.State) -> MainViewModel {
 
     override fun invoke(state: MainFeature.State): MainViewModel =
         MainViewModel(
-            images = state.images,
-            isLoading = state.isLoading
+            isLoading = state.isLoading,
+            positionalDataSource = state.positionalDataSource
         )
 }

@@ -66,6 +66,7 @@ dependencies {
     //RX Java
     implementation group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.1.1'
     implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.19'
+    implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
 
     //Koin
     def koin_version = '2.1.5'
