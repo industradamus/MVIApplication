@@ -10,6 +10,6 @@ import retrofit2.http.GET
  */
 interface PicsumApi {
 
-    @GET("200")
-    fun getImage(): Observable<Response<PicsumImage>>
+    @GET("v2/list")
+    fun getImage(): Observable<Response<List<PicsumImage>>>
 }

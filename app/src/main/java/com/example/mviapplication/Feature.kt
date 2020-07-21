@@ -7,6 +7,7 @@ import com.example.mviapplication.core.network.PicsumApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlin.random.Random
 
 class Feature(picsumApi: PicsumApi) : BaseFeature<Feature.Wish, Feature.Wish, Feature.Effect, Feature.State, Nothing>(
     initialState = State(),
@@ -48,7 +49,7 @@ class Feature(picsumApi: PicsumApi) : BaseFeature<Feature.Wish, Feature.Wish, Fe
             when (action) {
                 is Wish.GenerateInteger ->
                     picsumApi.getImage()
-                        .map { Effect.IntegerGenerated(it.body()!!.url) as Effect }
+                        .map { Effect.IntegerGenerated(it.body()!![Random.nextInt(it.body()!!.size)].downloadUrl) as Effect }
                         .startWith(Observable.just(Effect.StartedLoading))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
