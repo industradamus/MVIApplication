@@ -58,4 +58,37 @@ dependencies {
     //RX Java
     implementation group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.1.1'
     implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.19'
+
+    //Koin
+    def koin_version = '2.1.5'
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    implementation "org.koin:koin-androidx-ext:$koin_version"
+    implementation "org.koin:koin-core:$koin_version"
+
+    //Retrofit
+    def retrofit2_version = '2.7.1'
+    def okhttp3_version = '4.3.1'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.4'
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'jp.wasabeef:glide-transformations:4.1.0'
+
+    //Facebook
+    def stetho_version = '1.5.1'
+    implementation 'com.facebook.android:facebook-android-sdk:4.37.0'
+    implementation "com.facebook.stetho:stetho:$stetho_version"
+    implementation "com.facebook.stetho:stetho-okhttp3:$stetho_version"
+    implementation "com.facebook.stetho:stetho-js-rhino:$stetho_version"
+
+    //Tests
+    def mockito_version = '2.21.0'
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
 }

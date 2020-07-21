@@ -1,4 +1,4 @@
-package com.example.mviapplication.baseactivity
+package com.example.mviapplication.ui.common
 
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.ObservableSource

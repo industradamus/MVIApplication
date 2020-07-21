@@ -7,7 +7,7 @@ class MainViewModelTransformer : (Feature.State) -> ViewModel {
 
     override fun invoke(state: Feature.State): ViewModel =
         ViewModel(
-            text = state.randomInteger,
+            url = state.randomInteger,
             isLoading = state.isLoading
         )
 }

@@ -4,6 +4,6 @@ package com.example.mviapplication
  * @author s.buvaka
  */
 class ViewModel(
-    val text: String,
+    val url: String,
     val isLoading: Boolean
 )

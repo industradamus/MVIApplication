@@ -3,15 +3,15 @@ package com.example.mviapplication
 import com.badoo.mvicore.element.Actor
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.feature.BaseFeature
+import com.example.mviapplication.core.network.PicsumApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import java.util.concurrent.TimeUnit
-import kotlin.random.Random
+import io.reactivex.schedulers.Schedulers
 
-class Feature : BaseFeature<Feature.Wish, Feature.Wish, Feature.Effect, Feature.State, Nothing>(
+class Feature(picsumApi: PicsumApi) : BaseFeature<Feature.Wish, Feature.Wish, Feature.Effect, Feature.State, Nothing>(
     initialState = State(),
     wishToAction = { wish -> wish },
-    actor = ActorImpl(),
+    actor = ActorImpl(picsumApi),
     reducer = ReducerImpl()
 ) {
     data class State(
@@ -32,23 +32,27 @@ class Feature : BaseFeature<Feature.Wish, Feature.Wish, Feature.Effect, Feature.
                     isLoading = false,
                     randomInteger = effect.text
                 )
+                is Effect.ErrorLoading -> state.copy(isLoading = false)
             }
     }
 
     sealed class Effect {
         object StartedLoading : Effect()
         class IntegerGenerated(val text: String) : Effect()
+        data class ErrorLoading(val throwable: Throwable) : Effect()
     }
 
-    class ActorImpl : Actor<State, Wish, Effect> {
+    class ActorImpl(private val picsumApi: PicsumApi) : Actor<State, Wish, Effect> {
 
         override fun invoke(state: State, action: Wish): Observable<out Effect> =
             when (action) {
                 is Wish.GenerateInteger ->
-                    Observable.timer(2L, TimeUnit.SECONDS)
-                        .map { Effect.IntegerGenerated("Random value = ${Random.nextInt(Int.MAX_VALUE)}") as Effect }
+                    picsumApi.getImage()
+                        .map { Effect.IntegerGenerated(it.body()!!.url) as Effect }
                         .startWith(Observable.just(Effect.StartedLoading))
                         .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .onErrorReturn { Effect.ErrorLoading(it) }
             }
     }
 }
