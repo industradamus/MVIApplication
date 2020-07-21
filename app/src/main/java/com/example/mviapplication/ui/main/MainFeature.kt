@@ -1,22 +1,22 @@
-package com.example.mviapplication
+package com.example.mviapplication.ui.main
 
 import com.badoo.mvicore.element.Actor
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.feature.BaseFeature
+import com.example.mviapplication.core.models.PicsumImage
 import com.example.mviapplication.core.network.PicsumApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlin.random.Random
 
-class Feature(picsumApi: PicsumApi) : BaseFeature<Feature.Wish, Feature.Wish, Feature.Effect, Feature.State, Nothing>(
+class MainFeature(picsumApi: PicsumApi) : BaseFeature<MainFeature.Wish, MainFeature.Wish, MainFeature.Effect, MainFeature.State, Nothing>(
     initialState = State(),
     wishToAction = { wish -> wish },
     actor = ActorImpl(picsumApi),
     reducer = ReducerImpl()
 ) {
     data class State(
-        val randomInteger: String = "Nothing to generate",
+        val images: List<PicsumImage> = emptyList(),
         val isLoading: Boolean = false
     )
 
@@ -31,7 +31,7 @@ class Feature(picsumApi: PicsumApi) : BaseFeature<Feature.Wish, Feature.Wish, Fe
                 is Effect.StartedLoading -> state.copy(isLoading = true)
                 is Effect.IntegerGenerated -> state.copy(
                     isLoading = false,
-                    randomInteger = effect.text
+                    images = effect.images
                 )
                 is Effect.ErrorLoading -> state.copy(isLoading = false)
             }
@@ -39,7 +39,7 @@ class Feature(picsumApi: PicsumApi) : BaseFeature<Feature.Wish, Feature.Wish, Fe
 
     sealed class Effect {
         object StartedLoading : Effect()
-        class IntegerGenerated(val text: String) : Effect()
+        class IntegerGenerated(val images: List<PicsumImage>) : Effect()
         data class ErrorLoading(val throwable: Throwable) : Effect()
     }
 
@@ -48,8 +48,8 @@ class Feature(picsumApi: PicsumApi) : BaseFeature<Feature.Wish, Feature.Wish, Fe
         override fun invoke(state: State, action: Wish): Observable<out Effect> =
             when (action) {
                 is Wish.GenerateInteger ->
-                    picsumApi.getImage()
-                        .map { Effect.IntegerGenerated(it.body()!![Random.nextInt(it.body()!!.size)].downloadUrl) as Effect }
+                    picsumApi.getImageList()
+                        .map { Effect.IntegerGenerated(it.body()!!) as Effect }
                         .startWith(Observable.just(Effect.StartedLoading))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())

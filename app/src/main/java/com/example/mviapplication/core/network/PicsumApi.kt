@@ -11,5 +11,8 @@ import retrofit2.http.GET
 interface PicsumApi {
 
     @GET("v2/list")
-    fun getImage(): Observable<Response<List<PicsumImage>>>
+    fun getImageList(): Observable<Response<List<PicsumImage>>>
+
+    @GET("200/300")
+    fun getRandomImage(): Observable<Response<String>>
 }

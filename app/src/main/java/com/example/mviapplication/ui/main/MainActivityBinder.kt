@@ -1,4 +1,4 @@
-package com.example.mviapplication
+package com.example.mviapplication.ui.main
 
 import com.badoo.mvicore.android.AndroidBindings
 import com.badoo.mvicore.binder.using
@@ -8,11 +8,11 @@ import com.badoo.mvicore.binder.using
  */
 class MainActivityBinder(
     view: MainActivity,
-    private val feature: Feature
+    private val feature: MainFeature
 ) : AndroidBindings<MainActivity>(view) {
 
     override fun setup(view: MainActivity) {
         binder.bind(feature to view using MainViewModelTransformer())
-        binder.bind(view to feature using UiEventTransformer())
+        binder.bind(view to feature using MainUiEventTransformer())
     }
 }

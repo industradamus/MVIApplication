@@ -1,6 +1,7 @@
 package com.example.mviapplication.core.application
 
 import android.app.Application
+import com.example.mviapplication.core.di.commonModule
 import com.example.mviapplication.core.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -21,6 +22,7 @@ class KoinStarter {
     }
 
     private val modules = listOf(
+        commonModule,
         networkModule
     )
 }
